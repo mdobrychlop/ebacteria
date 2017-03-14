@@ -7,23 +7,24 @@ import sys
 
 class BactSprite(pygame.sprite.Sprite):
 
-    def __init__(self, position, direction, src_image):
+    def __init__(self, position, direction, src_image, multiplier):
         pygame.sprite.Sprite.__init__(self)
         self.src_image = pygame.image.load(src_image)
         self.position = position
         self.direction = direction
         self.speed = 0
+        self.multiplier = multiplier
 
     def motility(self, windowsize, ticks):
         """
         Controls all aspects of the cell's movement.
         """
 
-        switch_span = 10  # controls frequency of movement changes
-        max_speed = 10
+        switch_span = 10 * self.multiplier  # ctrls freq of movement changes
+        max_speed = 10 * self.multiplier
         min_speed = 0
         turn_angle = 40  # max angle of a single turn
-        bounce_speed = 5  # window border bounce speed
+        bounce_speed = 5 * self.multiplier  # window border bounce speed
         bounce_margin = 50  # window border width
 
         # higher switch_span -> lower freq of movement changes
@@ -68,7 +69,7 @@ winy = 600
 windowsize = (winx, winy)
 window = pygame.display.set_mode(windowsize)
 
-number_of_bacteria = 25
+number_of_bacteria = 15
 
 bacteria = []
 
@@ -76,7 +77,13 @@ for i in range(number_of_bacteria):
     draw_coord = (random.randrange(50, winx-50),
                   random.randrange(50, winy-50))
     draw_direction = random.randrange(-180, 180)
-    bact = BactSprite(draw_coord, draw_direction, 'black_test3.png')
+
+    # multiplier is a float that has to be truncated to 1 digit after the dot
+    # otherwise the game freezes right after generating initial positions
+    multipl = random.uniform(0.1, 1.5)
+    multipl = float(str(multipl)[:3])
+    print(multipl)
+    bact = BactSprite(draw_coord, draw_direction, 'black_test3.png', multipl)
     bacteria.append(bact)
 
 bact_group = pygame.sprite.RenderPlain(bacteria)
