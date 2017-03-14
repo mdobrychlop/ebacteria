@@ -15,19 +15,26 @@ class BactSprite(pygame.sprite.Sprite):
         self.speed = 0
 
     def motility(self, windowsize, ticks):
-        switch_freq = 10
+        """
+        Controls all aspects of the cell's movement.
+        """
+
+        switch_span = 10  # controls frequency of movement changes
         max_speed = 10
         min_speed = 0
-        turn_angle = 40
-        bounce_speed = 5
-        bounce_margin = 50
+        turn_angle = 40  # max angle of a single turn
+        bounce_speed = 5  # window border bounce speed
+        bounce_margin = 50  # window border width
 
-        if ticks % switch_freq == 0:
+        # higher switch_span -> lower freq of movement changes
+        if ticks % switch_span == 0:
+            # draw random speed and turn angle values
             rand_speed = random.randrange(min_speed, max_speed)
             self.speed = (rand_speed)
             rand_direction = random.randrange(-turn_angle, turn_angle)
             self.direction += (rand_direction)
 
+            # bounce back if you're too close to the window's border
             if self.position[0] >= windowsize[0] - bounce_margin:
                 self.direction = 90
                 self.speed = (bounce_speed)
@@ -41,11 +48,14 @@ class BactSprite(pygame.sprite.Sprite):
                 self.direction = 180
                 self.speed = (bounce_speed)
 
-    def update(self, deltat):
+    def update_position(self, deltat):
+        """
+        Updates the cell's position and orientation.
+        """
         x, y = self.position
         rad = self.direction * math.pi / 180
-        x += -self.speed*math.sin(rad)
-        y += -self.speed*math.cos(rad)
+        x += -self.speed * math.sin(rad)
+        y += -self.speed * math.cos(rad)
         self.position = (x, y)
         self.image = pygame.transform.rotate(self.src_image, self.direction)
         self.rect = self.image.get_rect()
@@ -75,6 +85,6 @@ while 1:
             sys.exit()
 
     window.fill((150, 150, 150))
-    bact_group.update(deltat)
+    bact_group.update_position(deltat)
     bact_group.draw(window)
     pygame.display.flip()
