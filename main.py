@@ -7,11 +7,11 @@ import sys
 
 class BactSprite(pygame.sprite.Sprite):
 
-    def __init__(self, position, src_image):
+    def __init__(self, position, direction, src_image):
         pygame.sprite.Sprite.__init__(self)
         self.src_image = pygame.image.load(src_image)
         self.position = position
-        self.direction = 0
+        self.direction = direction
         self.speed = 0
 
     def motility(self, windowsize, ticks):
@@ -35,17 +35,19 @@ class BactSprite(pygame.sprite.Sprite):
             self.direction += (rand_direction)
 
             # bounce back if you're too close to the window's border
+            # bounce them towards the middle of the screen, but not
+            # at a right angle - looks weird with many cells displayed
             if self.position[0] >= windowsize[0] - bounce_margin:
-                self.direction = 90
+                self.direction = random.randrange(80, 100)
                 self.speed = (bounce_speed)
             if self.position[1] >= windowsize[1] - bounce_margin:
-                self.direction = 0
+                self.direction = random.randrange(-10, 10)
                 self.speed = (bounce_speed)
             if self.position[0] <= bounce_margin:
-                self.direction = -90
+                self.direction = random.randrange(-100, -80)
                 self.speed = (bounce_speed)
             if self.position[1] <= bounce_margin:
-                self.direction = 180
+                self.direction = random.randrange(170, 190)
                 self.speed = (bounce_speed)
 
     def update(self, deltat):
@@ -66,16 +68,25 @@ winy = 600
 windowsize = (winx, winy)
 window = pygame.display.set_mode(windowsize)
 
-draw_coord = (random.randrange(100, winx-100), random.randrange(100, winy-100))
+number_of_bacteria = 25
 
-bact = BactSprite(draw_coord, 'black_test3.png')
-bact_group = pygame.sprite.RenderPlain(bact)
+bacteria = []
+
+for i in range(number_of_bacteria):
+    draw_coord = (random.randrange(50, winx-50),
+                  random.randrange(50, winy-50))
+    draw_direction = random.randrange(-180, 180)
+    bact = BactSprite(draw_coord, draw_direction, 'black_test3.png')
+    bacteria.append(bact)
+
+bact_group = pygame.sprite.RenderPlain(bacteria)
 clock = pygame.time.Clock()
 
 while 1:
     deltat = clock.tick(60)
 
-    bact.motility(windowsize, pygame.time.get_ticks())
+    for bact in bacteria:
+        bact.motility(windowsize, pygame.time.get_ticks())
 
     for event in pygame.event.get():
         if not hasattr(event, 'key'):
