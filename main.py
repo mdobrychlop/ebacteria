@@ -48,7 +48,7 @@ class BactSprite(pygame.sprite.Sprite):
                 self.direction = 180
                 self.speed = (bounce_speed)
 
-    def update_position(self, deltat):
+    def update(self, deltat):
         """
         Updates the cell's position and orientation.
         """
@@ -85,6 +85,6 @@ while 1:
             sys.exit()
 
     window.fill((150, 150, 150))
-    bact_group.update_position(deltat)
+    bact_group.update(deltat)
     bact_group.draw(window)
     pygame.display.flip()
