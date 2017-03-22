@@ -8,10 +8,10 @@ class Bacillus():
     Here drawn as:
     - two circles (head and tail)
     - a rectangle (body) connecting head and tail
-      ______________________
-     /  |  \          /  |  \
-    |   |   |        |   |   |
-     \__|__/__________\__|__/
+      ____________________
+     /  |  \        /  |  \
+    |   |   |      |   |   |
+     \__|__/________\__|__/
 
      https://en.wikipedia.org/wiki/Bacillus_(shape)
     """
@@ -69,14 +69,12 @@ class Bacillus():
         return (c1, c2, c3, c4)
 
     def draw_layer(self, surface, circle_rad, head_center,
-                   tail_center, body_corners, color):
+                   tail_center, body_corners, color, anti_aliasing=True):
         """
         Uses pygame's drawing methods to place shapes based on previously
         calculated coordinates and sizes.
-        For now, the function uses experimental gfxdraw methods, as they
-        are supposed to generate smoother shapes - but because the aacircle
-        shape seems to be broken, it might be reasonable to use standard,
-        non-experimental circles and rectangles in the future.
+        By default, the function uses experimental gfxdraw module
+        instead of draw module, as gfxdraw generates smoother shapes.
         """
         # leaving this here just in case, but the aacircles look awful
         #
@@ -85,12 +83,16 @@ class Bacillus():
         # gfxdraw.aacircle(surface, tail_center[0], tail_center[1],
         #                 circle_rad, color)
         #
-
-        # draw circular "head"
-        gfxdraw.filled_circle(surface, head_center[0], head_center[1],
-                              circle_rad, color)
-        # draw circular "tail"
-        gfxdraw.filled_circle(surface, tail_center[0], tail_center[1],
-                              circle_rad, color)
-        # draw rectangular "body"
-        gfxdraw.filled_polygon(surface, body_corners, color)
+        if anti_aliasing is True:
+            # draw circular "head"
+            gfxdraw.filled_circle(surface, head_center[0], head_center[1],
+                                  circle_rad, color)
+            # draw circular "tail"
+            gfxdraw.filled_circle(surface, tail_center[0], tail_center[1],
+                                  circle_rad, color)
+            # draw rectangular "body"
+            gfxdraw.filled_polygon(surface, body_corners, color)
+        else:
+            pygame.draw.circle(surface, color, head_center, circle_rad)
+            pygame.draw.circle(surface, color, tail_center, circle_rad)
+            pygame.draw.polygon(surface, color, body_corners)

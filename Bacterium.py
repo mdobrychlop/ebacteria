@@ -7,6 +7,9 @@ import sys
 
 
 class Bacterium(pygame.sprite.Sprite):
+    """
+    Contains all the information concerning a single bacterium.
+    """
     def __init__(self, position, direction, src_image,
                  multi, morph, size, color):
 
@@ -40,7 +43,7 @@ class Bacterium(pygame.sprite.Sprite):
         More work to build the cell's appearance, but much better preformance.
         """
         self.width = self.size
-        self.length = self.size*3
+        self.length = int(self.size*3.5)
 
         if morphology == 'bacillus':
             # calculate the shapes needed to describe provided morphology
