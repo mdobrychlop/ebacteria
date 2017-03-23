@@ -10,11 +10,11 @@ PRINT_AVG_FPS_AT_EXIT = True
 GAME_SPEED = 60
 
 # bacteria's appearance and behavior
-NUMBER_OF_CELLS = 25
+NUMBER_OF_CELLS = 30
 CELL_SIZE = 8  # tip: cells look better when even number
 CELLS_MOVING = True  # False freezes all movement
 CELLS_NON_ROTATED = False  # True makes cells start from non-rotated positions
 PNG_IMAGE = ''  # 'black_test3.png'  # empty string if drawing using shapes
 MORPHOLOGY = 'bacillus'  # in case drawing using pygame's shapes
-CELL_COLOR = (50, 50, 50)  # in case drawing using pygame's shapes
+CELL_COLOR = (20, 20, 20)  # in case drawing using pygame's shapes
 # --- --------------- ---

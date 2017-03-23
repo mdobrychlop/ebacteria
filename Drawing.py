@@ -1,5 +1,6 @@
 from pygame import gfxdraw  # experimental, must be imported individually
 import pygame
+import random
 
 
 class Bacillus():
@@ -19,6 +20,7 @@ class Bacillus():
         self.width = width
         self.length = length
         self.top_color = color
+        self.border_width = self.calculate_border_width()
 
     def draw_shape(self, surface):
         """
@@ -26,12 +28,12 @@ class Bacillus():
         """
         # for now, the light grey contours are only modifiable here
         # the main cell color can be modified in the parameters
-        bg_color = (175, 175, 175)
-        mid_color = (155, 155, 155)
+        bg_color = (200, 200, 200)
+        mid_color = (175, 175, 175)
         top_color = self.top_color
 
-        bg_contour_width = int(self.width*0.2)
-        mid_contour_width = int(self.width*0.2)
+        bg_contour_width = self.border_width
+        mid_contour_width = self.border_width
         head_center = (int(self.width/2), int(self.width/2))
         tail_center = (int(self.width/2), int(self.length-self.width/2))
 
@@ -44,6 +46,9 @@ class Bacillus():
         # top layer
         top_circle_radius = bg_circle_radius - mid_contour_width*2
         top_body_corners = self.calculate_body_corners(mid_contour_width*2)
+
+        # add transparency
+        surface = self.set_transparency(surface)
 
         # draw background layer
         self.draw_layer(surface, bg_circle_radius, head_center,
@@ -67,6 +72,16 @@ class Bacillus():
         c4 = (plcw, int(self.length-self.width/2))
 
         return (c1, c2, c3, c4)
+
+    def calculate_border_width(self):
+        """
+        Makes sure the outline of the cell is not 0px wide.
+        """
+        border_width = int(self.width*0.2)
+        if border_width == 0:
+            border_width = 1
+
+        return border_width
 
     def draw_layer(self, surface, circle_rad, head_center,
                    tail_center, body_corners, color, anti_aliasing=True):
@@ -96,3 +111,18 @@ class Bacillus():
             pygame.draw.circle(surface, color, head_center, circle_rad)
             pygame.draw.circle(surface, color, tail_center, circle_rad)
             pygame.draw.polygon(surface, color, body_corners)
+
+    def set_transparency(self, surface):
+        """
+        Assigns a random value of transparency to the cell.
+        """
+        r = random.randrange(1, 10)
+        if r <= 2:
+            random_alpha = random.randrange(120, 140)
+        elif r <= 7:
+            random_alpha = random.randrange(141, 160)
+        else:
+            random_alpha = random.randrange(161, 255)
+
+        surface.set_alpha(random_alpha)
+        return surface

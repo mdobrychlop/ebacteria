@@ -60,18 +60,21 @@ class Bacterium(pygame.sprite.Sprite):
     def motility(self, windowsize, ticks):
         """
         Controls all aspects of the cell's movement.
+        PROBABLY REQUIRES MOVING TO ANOTHER CLASS ASAP.
         """
 
-        switch_span = 10 * self.multiplier  # ctrls freq of movement changes
-        max_speed = 10 * self.multiplier
+        switch_span = int(10 * self.multiplier)  # ~freq of movement changes
+        max_speed = int(5 * self.multiplier)
         min_speed = 0
         turn_angle = 40  # max angle of a single turn
-        bounce_speed = 5 * self.multiplier  # window border bounce speed
+        bounce_speed = int(5 * self.multiplier)  # window border bounce speed
         bounce_margin = 50  # window border width
 
         # higher switch_span -> lower freq of movement changes
         if ticks % switch_span == 0:
             # draw random speed and turn angle values
+            if max_speed == 0:
+                max_speed = 1
             rand_speed = random.randrange(min_speed, max_speed)
             self.speed = (rand_speed)
             rand_direction = random.randrange(-turn_angle, turn_angle)
