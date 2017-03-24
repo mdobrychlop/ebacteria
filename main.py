@@ -1,7 +1,8 @@
 from pygame.locals import *
-import Config
 from pygame import gfxdraw
 from Bacterium import Bacterium
+from Events import EventControl
+import Config
 import math
 import pygame
 import random
@@ -13,6 +14,7 @@ def generate_cells():
     Generates bacteria objects for all bacteria.
     """
     bacteria = []
+    identifier = 1
     for i in range(Config.NUMBER_OF_CELLS):
         draw_coord = (random.randrange(50, Config.WIN_X-50),
                       random.randrange(50, Config.WIN_Y-50))
@@ -27,8 +29,9 @@ def generate_cells():
         multipl = float(str(multipl)[:3])
         bact = Bacterium(draw_coord, draw_direction, Config.PNG_IMAGE,
                          multipl, Config.MORPHOLOGY, Config.CELL_SIZE,
-                         Config.CELL_COLOR)
+                         Config.CELL_COLOR, identifier)
         bacteria.append(bact)
+        identifier += 1
     return bacteria
 
 
@@ -56,14 +59,9 @@ def main():
                 bact.motility((Config.WIN_X, Config.WIN_Y),
                               pygame.time.get_ticks())
         # manage events
-        for event in pygame.event.get():
-            if not hasattr(event, 'key'):
-                continue
-            if event.type == pygame.QUIT or event.key == K_ESCAPE:
-                if Config.PRINT_AVG_FPS_AT_EXIT is True:
-                    print("AVERAGE FPS AFTER", counter, "ITERATIONS:", avg_fps)
-                pygame.quit()
-                sys.exit()
+        event_control = EventControl(pygame.event.get(), bacteria,
+                                     Config, pygame)
+        bacteria, config = event_control.process_events()
 
         window.fill(Config.BACKGROUND_COLOR)
         bact_group.update(deltat)

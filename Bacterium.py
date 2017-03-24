@@ -11,15 +11,17 @@ class Bacterium(pygame.sprite.Sprite):
     Contains all the information concerning a single bacterium.
     """
     def __init__(self, position, direction, src_image,
-                 multi, morph, size, color):
+                 multi, morph, size, color, id):
 
         pygame.sprite.Sprite.__init__(self)
 
+        self.id = id
         self.size = size
         self.color = color
+        self.morph = morph
 
         if src_image == '':
-            self.draw_from_shapes(morph)
+            self.draw_from_shapes()
         else:
             self.draw_from_image(src_image)
 
@@ -35,7 +37,7 @@ class Bacterium(pygame.sprite.Sprite):
         """
         self.main_surface = pygame.image.load(src_image)
 
-    def draw_from_shapes(self, morphology):
+    def draw_from_shapes(self):
         """
         Defines a surface of a given size, and then draws the cell's shape
         on the surface using pygame's built-in shape drawing methods.
@@ -45,7 +47,7 @@ class Bacterium(pygame.sprite.Sprite):
         self.width = self.size
         self.length = int(self.size*3.5)
 
-        if morphology == 'bacillus':
+        if self.morph == 'bacillus':
             # calculate the shapes needed to describe provided morphology
             cell_shape = Drawing.Bacillus(self.width, self.length, self.color)
 
