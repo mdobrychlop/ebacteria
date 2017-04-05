@@ -2,6 +2,7 @@ from pygame.locals import *
 from pygame import gfxdraw
 from Bacterium import Bacterium
 from Events import EventControl
+from Hud import InfoBox, PauseText
 import Config
 import math
 import pygame
@@ -36,6 +37,7 @@ def generate_cells():
 
 
 def main():
+    infobox = InfoBox()
     bacteria = generate_cells()
     bact_group = pygame.sprite.RenderPlain(bacteria)
     counter = 1
@@ -60,12 +62,20 @@ def main():
                               pygame.time.get_ticks())
         # manage events
         event_control = EventControl(pygame.event.get(), bacteria,
-                                     Config, pygame)
-        bacteria, config = event_control.process_events()
+                                     Config, pygame, infobox)
+        bacteria, config, infobox = event_control.process_events()
 
         window.fill(Config.BACKGROUND_COLOR)
         bact_group.update(deltat)
         bact_group.draw(window)
+
+        if infobox.shown is False:
+            infobox.hide()
+        else:
+            infobox.show()
+
+        infobox.draw(window)
+
         pygame.display.flip()
 
 

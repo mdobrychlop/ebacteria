@@ -22,7 +22,7 @@ class Bacillus():
         self.top_color = color
         self.border_width = self.calculate_border_width()
 
-    def draw_shape(self, surface):
+    def draw_shape(self, surface, transparency):
         """
         Draws the cell's shape on a given surface object.
         """
@@ -47,9 +47,6 @@ class Bacillus():
         top_circle_radius = bg_circle_radius - mid_contour_width*2
         top_body_corners = self.calculate_body_corners(mid_contour_width*2)
 
-        # add transparency
-        surface = self.set_transparency(surface)
-
         # draw background layer
         self.draw_layer(surface, bg_circle_radius, head_center,
                         tail_center, bg_body_corners, bg_color)
@@ -59,6 +56,9 @@ class Bacillus():
         # draw top layer
         self.draw_layer(surface, top_circle_radius, head_center,
                         tail_center, top_body_corners, top_color)
+
+        # add transparency
+        surface.set_alpha(transparency)
 
     def calculate_body_corners(self, previous_layer_contour_width):
         """
@@ -111,18 +111,3 @@ class Bacillus():
             pygame.draw.circle(surface, color, head_center, circle_rad)
             pygame.draw.circle(surface, color, tail_center, circle_rad)
             pygame.draw.polygon(surface, color, body_corners)
-
-    def set_transparency(self, surface):
-        """
-        Assigns a random value of transparency to the cell.
-        """
-        r = random.randrange(1, 10)
-        if r <= 2:
-            random_alpha = random.randrange(120, 140)
-        elif r <= 7:
-            random_alpha = random.randrange(141, 160)
-        else:
-            random_alpha = random.randrange(161, 255)
-
-        surface.set_alpha(random_alpha)
-        return surface

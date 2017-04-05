@@ -18,17 +18,19 @@ class Bacterium(pygame.sprite.Sprite):
         self.id = id
         self.size = size
         self.color = color
+        self.highlight_color = (0, 255, 0)
         self.morph = morph
+        self.highlighted = False
+        self.position = position
+        self.direction = direction
+        self.speed = 0
+        self.multiplier = multi
+        self.transparency = self.random_transparency()
 
         if src_image == '':
             self.draw_from_shapes()
         else:
             self.draw_from_image(src_image)
-
-        self.position = position
-        self.direction = direction
-        self.speed = 0
-        self.multiplier = multi
 
     def draw_from_image(self, src_image):
         """
@@ -47,9 +49,14 @@ class Bacterium(pygame.sprite.Sprite):
         self.width = self.size
         self.length = int(self.size*3.5)
 
+        if self.highlighted is True:
+            col = self.highlight_color
+        else:
+            col = self.color
+
         if self.morph == 'bacillus':
             # calculate the shapes needed to describe provided morphology
-            cell_shape = Drawing.Bacillus(self.width, self.length, self.color)
+            cell_shape = Drawing.Bacillus(self.width, self.length, col)
 
         # set the main surface = background for the bacterium's shape
         self.main_surface = pygame.Surface((self.width, self.length))
@@ -57,7 +64,18 @@ class Bacterium(pygame.sprite.Sprite):
         self.main_surface.set_colorkey((0, 0, 0))
 
         # draw the shape on the surface
-        cell_shape.draw_shape(self.main_surface)
+        cell_shape.draw_shape(self.main_surface, self.transparency)
+
+    def random_transparency(self):
+        r = random.randrange(1, 10)
+        if r <= 2:
+            random_alpha = random.randrange(120, 140)
+        elif r <= 7:
+            random_alpha = random.randrange(141, 160)
+        else:
+            random_alpha = random.randrange(161, 255)
+
+        return random_alpha
 
     def motility(self, windowsize, ticks):
         """

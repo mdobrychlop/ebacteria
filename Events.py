@@ -11,8 +11,9 @@ class EventControl():
     Later, if more events are used, it'd be a good idea
     to separate "user input events" from other events.
     """
-    def __init__(self, events, bacteria, config, pygame):
+    def __init__(self, events, bacteria, config, pygame, hud):
         self.events = events
+        self.hud = hud
         self.bacteria = bacteria
         self.config = config
         self.pygame_state = pygame
@@ -28,14 +29,13 @@ class EventControl():
             if not hasattr(self.event, 'key'):
                 continue
             self.manage_keyboard()
-        return self.bacteria, self.config
+        return self.bacteria, self.config, self.hud
 
     def manage_mouse(self):
         """
         Gathers all methods devoted to proess mouse input.
         """
         self.mouse_bacteria()
-        self.mouse_hud()
 
     def manage_keyboard(self):
         """
@@ -54,15 +54,28 @@ class EventControl():
                 self.event.button == 1):
 
             pos = self.pygame_state.mouse.get_pos()
-            for bact in self.bacteria:
-                if bact.rect.collidepoint(pos):
-                    bact.color = (random.randrange(0, 255),
-                                  random.randrange(0, 255),
-                                  random.randrange(0, 255))
-                    bact.draw_from_shapes()
 
-    def mouse_hud(self):
-        pass
+            clicked_on_bacterium = False
+            # prev_clicked_bact = None
+
+            for bact in self.bacteria:
+                bact.highlighted = False
+                if bact.rect.collidepoint(pos):
+                    clicked_on_bacterium = True
+                    self.mouse_hud_show()
+                    self.hud.show_info(bact)
+                    bact.highlighted = True
+                    prev_clicked_bact = self.bacteria.index(bact)
+                bact.draw_from_shapes()
+
+            if clicked_on_bacterium is False:
+                self.mouse_hud_hide()
+
+    def mouse_hud_show(self):
+        self.hud.shown = True
+
+    def mouse_hud_hide(self):
+        self.hud.shown = False
 
     def key_pause(self):
         """

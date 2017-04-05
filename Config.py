@@ -17,4 +17,8 @@ CELLS_NON_ROTATED = False  # True makes cells start from non-rotated positions
 PNG_IMAGE = ''  # 'black_test3.png'  # empty string if drawing using shapes
 MORPHOLOGY = 'bacillus'  # in case drawing using pygame's shapes
 CELL_COLOR = (20, 20, 20)  # in case drawing using pygame's shapes
+
+# HUD parameters
+HUD_COLOR = (255, 255, 255)
+HUD_TRANSPARENCY = 128
 # --- --------------- ---
