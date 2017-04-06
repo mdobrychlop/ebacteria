@@ -18,7 +18,8 @@ class InfoBox():
         self.surface.set_alpha(Config.HUD_TRANSPARENCY)
         self.surface.set_colorkey((0, 0, 0))
         self.shown = False
-        self.text = ""
+        # text is a list of lines to display
+        self.text = []
         self.curr_textpos = 0
 
     def draw(self, screen):
@@ -31,10 +32,15 @@ class InfoBox():
         """
         Renders text on the surface of the box.
         """
+        vertical_position = 5
         font_size = 12
-        myfont = pygame.font.SysFont("monospace", font_size)
-        label = myfont.render(self.text, 1, (1, 1, 1))
-        self.surface.blit(label, (5, 5))
+        spacing = int(font_size / 4)
+
+        for line in self.text:
+            myfont = pygame.font.SysFont("monospace", font_size)
+            label = myfont.render(line, 1, (1, 1, 1))
+            self.surface.blit(label, (5, vertical_position))
+            vertical_position += font_size + spacing
 
     def hide(self):
         """
@@ -50,13 +56,23 @@ class InfoBox():
         self.add_text()
 
     def show_info(self, bact):
-        info = "Specimen ID: "+str(bact.id)
-        self.text = info
+        id_info = "Specimen ID: "+str(bact.id)
+        speed_info = "speed: "+str(bact.original_speed)
+        self.text = [id_info, speed_info]
 
 
-class PauseText():
-    def show(self, screen):
+class ScreenText():
+    """
+    Controls text that is displayed directly on the screen surface.
+    """
+    def __init__(self):
+        self.shown = False
+
+    def show_pause_text(self, screen):
         font_size = 22
         myfont = pygame.font.SysFont("monospace", font_size)
         label = myfont.render("GAME PAUSED", 1, (125, 1, 1))
-        screen.blit(label, (5, 5))
+        screen.blit(label, (10, 10))
+
+    def hide_pause_text(self, screen):
+        pass

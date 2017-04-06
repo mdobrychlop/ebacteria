@@ -2,7 +2,7 @@ from pygame.locals import *
 from pygame import gfxdraw
 from Bacterium import Bacterium
 from Events import EventControl
-from Hud import InfoBox, PauseText
+from Hud import InfoBox, ScreenText
 import Config
 import math
 import pygame
@@ -38,6 +38,7 @@ def generate_cells():
 
 def main():
     infobox = InfoBox()
+    screentext = ScreenText()
     bacteria = generate_cells()
     bact_group = pygame.sprite.RenderPlain(bacteria)
     counter = 1
@@ -61,9 +62,10 @@ def main():
                 bact.motility((Config.WIN_X, Config.WIN_Y),
                               pygame.time.get_ticks())
         # manage events
+        # TODO: manage infobox and screentext as one thing (hud)
         event_control = EventControl(pygame.event.get(), bacteria,
-                                     Config, pygame, infobox)
-        bacteria, config, infobox = event_control.process_events()
+                                     Config, pygame, infobox, screentext)
+        bacteria, config, infobox, screentext = event_control.process_events()
 
         window.fill(Config.BACKGROUND_COLOR)
         bact_group.update(deltat)
@@ -73,6 +75,9 @@ def main():
             infobox.hide()
         else:
             infobox.show()
+
+        if screentext.shown is True:
+            screentext.show_pause_text(window)
 
         infobox.draw(window)
 

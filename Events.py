@@ -11,9 +11,10 @@ class EventControl():
     Later, if more events are used, it'd be a good idea
     to separate "user input events" from other events.
     """
-    def __init__(self, events, bacteria, config, pygame, hud):
+    def __init__(self, events, bacteria, config, pygame, infobox, screentext):
         self.events = events
-        self.hud = hud
+        self.infobox = infobox
+        self.screentext = screentext
         self.bacteria = bacteria
         self.config = config
         self.pygame_state = pygame
@@ -29,7 +30,7 @@ class EventControl():
             if not hasattr(self.event, 'key'):
                 continue
             self.manage_keyboard()
-        return self.bacteria, self.config, self.hud
+        return self.bacteria, self.config, self.infobox, self.screentext
 
     def manage_mouse(self):
         """
@@ -63,7 +64,7 @@ class EventControl():
                 if bact.rect.collidepoint(pos):
                     clicked_on_bacterium = True
                     self.mouse_hud_show()
-                    self.hud.show_info(bact)
+                    self.infobox.show_info(bact)
                     bact.highlighted = True
                     prev_clicked_bact = self.bacteria.index(bact)
                 bact.draw_from_shapes()
@@ -72,10 +73,10 @@ class EventControl():
                 self.mouse_hud_hide()
 
     def mouse_hud_show(self):
-        self.hud.shown = True
+        self.infobox.shown = True
 
     def mouse_hud_hide(self):
-        self.hud.shown = False
+        self.infobox.shown = False
 
     def key_pause(self):
         """
@@ -87,9 +88,12 @@ class EventControl():
             if self.config.CELLS_MOVING is True:
                     self.config.CELLS_MOVING = False
                     for bact in self.bacteria:
+                        bact.original_speed = bact.speed
                         bact.speed = 0
+                        self.screentext.shown = True
             else:
                 self.config.CELLS_MOVING = True
+                self.screentext.shown = False
 
     def key_quit(self):
         """

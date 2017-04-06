@@ -24,6 +24,8 @@ class Bacterium(pygame.sprite.Sprite):
         self.position = position
         self.direction = direction
         self.speed = 0
+        # original_speed stores speed before each pause
+        self.original_speed = 0
         self.multiplier = multi
         self.transparency = self.random_transparency()
 
